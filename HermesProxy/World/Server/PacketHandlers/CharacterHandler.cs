@@ -34,7 +34,7 @@ namespace HermesProxy.World.Server
                     AccountId = WowGuid128.Create(HighGuidType703.WowAccount, GetSession().GameAccountInfo.Id),
                     CharacterGuid = ownCharacter.CharacterGuid,
                     RealmVirtualAddress = GetSession().RealmId.GetAddress(),
-                    RealmName = "", // If empty the realm name will not be displayed
+                    RealmName = GetSession().Realm.Name, // If empty the realm name will not be displayed
                     LastLoginUnixSec = ownCharacter.LastLoginUnixSec,
 
                     Name = ownCharacter.Name,
