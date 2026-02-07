@@ -8,7 +8,7 @@ on:
       tag:
         description: 'Release Tag'
         required: true
-        default: '3.6'
+        default: '3.8.c'
         type: string
       update_release:
         description: 'Update Release'
@@ -52,7 +52,7 @@ jobs:
       #    7z a hermes_proxy_${{ github.sha }}.zip .\publish\*
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hermes_proxy_${{ github.sha }}
           path: publish/*
@@ -60,7 +60,7 @@ jobs:
           if-no-files-found: error
           
   add_launcher:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
     needs: build
@@ -68,7 +68,7 @@ jobs:
     steps:
     
       - name: Download Hermes Proxy
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: hermes_proxy_${{ github.sha }}
           path: proxy
@@ -144,14 +144,14 @@ jobs:
      #     args: zip -qq -r hermes_launcher_tbc.zip tbc_launcher
           
       - name: Upload Classic Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hermes_launcher_classic_${{ github.sha }}
           path: classic_launcher/hermes_launcher_classic.zip
           if-no-files-found: error
           
       - name: Upload TBC Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hermes_launcher_tbc_${{ github.sha }}
           path: tbc_launcher/hermes_launcher_tbc.zip
@@ -159,7 +159,7 @@ jobs:
 
   upload:
     if: ${{ inputs.update_release }} == true
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
     needs: add_launcher
@@ -171,13 +171,13 @@ jobs:
       #    name: snapshot-default
       #    path: all_snapshots
       - name: Download Classic Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: hermes_launcher_classic_${{ github.sha }}
           path: releases
           
       - name: Download TBC Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: hermes_launcher_tbc_${{ github.sha }}
           path: releases
