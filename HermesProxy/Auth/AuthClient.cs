@@ -568,7 +568,10 @@ namespace HermesProxy.Auth
             for (ushort i = 0; i < realmsCount; i++)
             {
                 RealmInfo realmInfo = new RealmInfo();
-                realmInfo.ID = i;
+                // Legacy realm lists carry no id. Realm indexes are 1-based and must match the
+                // realm id baked into player GUIDs (WowGuid128.RealmSpecificCreate), otherwise
+                // the client can't resolve character realm names (combat log shows "Name-").
+                realmInfo.ID = (uint)i + 1;
 
                 if (Settings.ServerBuild < ClientVersionBuild.V2_0_3_6299)
                 {
