@@ -4,6 +4,7 @@ using HermesProxy.World.Enums;
 using HermesProxy.World.Objects;
 using HermesProxy.World.Server.Packets;
 using System;
+using System.Collections.Generic;
 
 namespace HermesProxy.World.Client
 {
@@ -152,6 +153,54 @@ namespace HermesProxy.World.Client
             log.Player = packet.ReadGuid().To128(GetSession().GameState);
             log.Victim = packet.ReadGuid().To128(GetSession().GameState);
             SendPacketToClient(log);
+        }
+
+        // Threat packets are custom opcodes of the mangos-classic fork (1.12 has no threat
+        // display). The server sends raw threat as float, the modern client expects it x100.
+        List<ThreatInfo> ReadThreatList(WorldPacket packet)
+        {
+            List<ThreatInfo> threatList = new();
+            uint count = packet.ReadUInt32();
+            for (uint i = 0; i < count; i++)
+            {
+                ThreatInfo threatInfo = new();
+                threatInfo.UnitGUID = packet.ReadPackedGuid().To128(GetSession().GameState);
+                threatInfo.Threat = (long)(packet.ReadFloat() * 100);
+                threatList.Add(threatInfo);
+            }
+            return threatList;
+        }
+        [PacketHandler(Opcode.SMSG_THREAT_UPDATE)]
+        void HandleThreatUpdate(WorldPacket packet)
+        {
+            ThreatUpdate update = new();
+            update.UnitGUID = packet.ReadPackedGuid().To128(GetSession().GameState);
+            update.ThreatList = ReadThreatList(packet);
+            SendPacketToClient(update);
+        }
+        [PacketHandler(Opcode.SMSG_HIGHEST_THREAT_UPDATE)]
+        void HandleHighestThreatUpdate(WorldPacket packet)
+        {
+            HighestThreatUpdate update = new();
+            update.UnitGUID = packet.ReadPackedGuid().To128(GetSession().GameState);
+            update.HighestThreatGUID = packet.ReadPackedGuid().To128(GetSession().GameState);
+            update.ThreatList = ReadThreatList(packet);
+            SendPacketToClient(update);
+        }
+        [PacketHandler(Opcode.SMSG_THREAT_REMOVE)]
+        void HandleThreatRemove(WorldPacket packet)
+        {
+            ThreatRemove remove = new();
+            remove.UnitGUID = packet.ReadPackedGuid().To128(GetSession().GameState);
+            remove.AboutGUID = packet.ReadPackedGuid().To128(GetSession().GameState);
+            SendPacketToClient(remove);
+        }
+        [PacketHandler(Opcode.SMSG_THREAT_CLEAR)]
+        void HandleThreatClear(WorldPacket packet)
+        {
+            ThreatClear clear = new();
+            clear.UnitGUID = packet.ReadPackedGuid().To128(GetSession().GameState);
+            SendPacketToClient(clear);
         }
     }
 }

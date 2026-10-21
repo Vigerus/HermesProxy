@@ -812,6 +812,11 @@ namespace HermesProxy.World.Enums.V1_12_1_5875
         SMSG_SUPERCEDED_SPELLS                                = 0x12C,
         SMSG_TAXI_NODE_STATUS                                 = 0x1AB,
         SMSG_TEXT_EMOTE                                       = 0x105,
+        // Custom opcodes sent by Vigerus/mangos-classic (viger_server), not part of 1.12.1
+        SMSG_HIGHEST_THREAT_UPDATE                            = 0x343,
+        SMSG_THREAT_UPDATE                                    = 0x344,
+        SMSG_THREAT_REMOVE                                    = 0x345,
+        SMSG_THREAT_CLEAR                                     = 0x346,
         SMSG_TRADE_STATUS                                     = 0x120,
         SMSG_TRADE_STATUS_EXTENDED                            = 0x121,
         SMSG_TRAINER_BUY_FAILED                               = 0x1B4,
